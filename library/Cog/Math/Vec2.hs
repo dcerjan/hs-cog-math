@@ -1,23 +1,4 @@
-module Cog.Math.Vec2 (
-  Vec2 (..),
-  add,
-  sub,
-  scale,
-  dot,
-  cross,
-  reverse,
-  lenSq,
-  len,
-  distSq,
-  dist,
-  normalize,
-  angle,
-  angleTo,
-  lerp,
-  nlerp,
-  slerp,
-  project
-) where
+module Cog.Math.Vec2 where
 
 import Prelude hiding (reverse)
 
