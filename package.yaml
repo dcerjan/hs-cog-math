@@ -23,6 +23,7 @@ ghc-options: -Wall
 library:
   dependencies:
   - base
+  - ghc-prim
   source-dirs: library
 
 executables:
