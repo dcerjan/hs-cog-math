@@ -2,6 +2,7 @@
 
 module Cog.Math.Vec where
 
+import GHC.Exts
 import GHC.Prim (Float#, sqrtFloat#, divideFloat#)
 
 class Vec a where
@@ -27,3 +28,6 @@ class Vec a where
   project :: a -> a -> a
   project a b = b `scale` q
     where q = (a `dot` b) `divideFloat#` len b
+
+showFloat# :: Float# -> String
+showFloat# !n = (show $ F# n) ++ "#"
