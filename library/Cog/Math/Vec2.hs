@@ -2,10 +2,10 @@
 
 module Cog.Math.Vec2
   ( Vec2
-  , mkVec2
+  , newVec2
   , boxVec2
   , showVec2
-  , eqVec2
+  , equals
   , add
   , sub
   , scale
@@ -34,11 +34,11 @@ int2bool _ = True
 
 type Vec2 = (# Float#, Float# #)
 
-mkVec2 :: Float -> Float -> Vec2
-mkVec2 !(F# x) !(F# y) = (# x, y #)
+newVec2 :: Float -> Float -> Vec2
+newVec2 !(F# x) !(F# y) = (# x, y #)
 
 boxVec2 :: Vec2 -> (Float, Float)
-boxVec2 !(# x, y #) = (F# x, F# y)
+boxVec2 !(# !x, !y #) = (F# x, F# y)
 
 showVec2 :: Vec2 -> String
 showVec2 !(# x, y #) = "Vec2(" ++ sx ++ "f, " ++ sy ++ "f)"
@@ -46,8 +46,8 @@ showVec2 !(# x, y #) = "Vec2(" ++ sx ++ "f, " ++ sy ++ "f)"
     !sx = show $ F# x
     !sy = show $ F# y
 
-eqVec2 :: Vec2 -> Vec2 -> Bool
-eqVec2 !(# ax, ay #) !(# bx, by #) = x && y
+equals :: Vec2 -> Vec2 -> Bool
+equals !(# ax, ay #) !(# bx, by #) = x && y
   where
     !x = int2bool ((ax `eqFloat#` bx) ==# 1#)
     !y = int2bool ((ay `eqFloat#` by) ==# 1#)
@@ -101,8 +101,8 @@ lerp !src@(# srcX, srcY #) !dst@(# dstX, dstY #) !t
   | int2bool ((t `geFloat#` 1.0#) ==# 1#) = dst
   | otherwise = (# x, y #)
     where
-      !x = srcX `plusFloat#` (dstX `minusFloat#` srcX) `timesFloat#` t
-      !y = srcY `plusFloat#` (dstY `minusFloat#` srcY) `timesFloat#` t
+      !x = srcX `plusFloat#` ((dstX `minusFloat#` srcX) `timesFloat#` t)
+      !y = srcY `plusFloat#` ((dstY `minusFloat#` srcY) `timesFloat#` t)
 
 nlerp :: Vec2 -> Vec2 -> Float# -> Vec2
 nlerp !src !dst !t = normalize(lerp src dst t)
@@ -123,7 +123,7 @@ slerp !src !dst !t
 
 project :: Vec2 -> Vec2 -> Vec2
 project !a !b = b `scale` q
-  where !q = (a `dot` b) `divideFloat#` len b
+  where !q = (a `dot` b) `divideFloat#` lenSq b
 
 cross :: Vec2 -> Vec2
-cross !(# x, y #) = (# negateFloat# y, x #)
+cross !(# x, y #) = (# y, negateFloat# x #)
