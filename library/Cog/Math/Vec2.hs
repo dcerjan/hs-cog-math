@@ -2,10 +2,10 @@
 
 module Cog.Math.Vec2
   ( Vec2
-  , newVec2
-  , boxVec2
-  , showVec2
-  , equals
+  , new
+  , box
+  , show
+  , eq
   , add
   , sub
   , scale
@@ -26,28 +26,28 @@ module Cog.Math.Vec2
   ) where
 
 import GHC.Exts
-import Prelude hiding (reverse)
+import qualified Prelude as P
 
-int2bool :: Int# -> Bool
-int2bool 0# = False
-int2bool _ = True
+int2bool :: Int# -> P.Bool
+int2bool 0# = P.False
+int2bool _ = P.True
 
 type Vec2 = (# Float#, Float# #)
 
-newVec2 :: Float -> Float -> Vec2
-newVec2 !(F# x) !(F# y) = (# x, y #)
+new :: Float -> Float -> Vec2
+new !(F# x) !(F# y) = (# x, y #)
 
-boxVec2 :: Vec2 -> (Float, Float)
-boxVec2 !(# !x, !y #) = (F# x, F# y)
+box :: Vec2 -> (Float, Float)
+box !(# !x, !y #) = (F# x, F# y)
 
-showVec2 :: Vec2 -> String
-showVec2 !(# x, y #) = "Vec2(" ++ sx ++ "f, " ++ sy ++ "f)"
+show :: Vec2 -> P.String
+show !(# x, y #) = "Vec2(" P.++ sx P.++ "f, " P.++ sy P.++ "f)"
   where
-    !sx = show $ F# x
-    !sy = show $ F# y
+    !sx = P.show P.$ F# x
+    !sy = P.show P.$ F# y
 
-equals :: Vec2 -> Vec2 -> Bool
-equals !(# ax, ay #) !(# bx, by #) = x && y
+eq :: Vec2 -> Vec2 -> P.Bool
+eq !(# ax, ay #) !(# bx, by #) = x P.&& y
   where
     !x = int2bool ((ax `eqFloat#` bx) ==# 1#)
     !y = int2bool ((ay `eqFloat#` by) ==# 1#)
@@ -99,7 +99,7 @@ lerp :: Vec2 -> Vec2 -> Float# -> Vec2
 lerp !src@(# srcX, srcY #) !dst@(# dstX, dstY #) !t
   | int2bool ((t `leFloat#` 0.0#) ==# 1#) = src
   | int2bool ((t `geFloat#` 1.0#) ==# 1#) = dst
-  | otherwise = (# x, y #)
+  | P.otherwise = (# x, y #)
     where
       !x = srcX `plusFloat#` ((dstX `minusFloat#` srcX) `timesFloat#` t)
       !y = srcY `plusFloat#` ((dstY `minusFloat#` srcY) `timesFloat#` t)
@@ -111,7 +111,7 @@ slerp :: Vec2 -> Vec2 -> Float# -> Vec2
 slerp !src !dst !t
   | int2bool ((t `leFloat#` 0.0#) ==# 1#) = src
   | int2bool ((t `geFloat#` 1.0#) ==# 1#) = dst
-  | otherwise = pSrc `add` pDst
+  | P.otherwise = pSrc `add` pDst
     where
       !omega = src `angleTo` dst
       !sinOmega = sinFloat# omega
